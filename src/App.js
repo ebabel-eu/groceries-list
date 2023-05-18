@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
 
-function App() {
+export default function App() {
+  const [groceries, setGroceries] = useState([]);
+  const [duplicateFound, setDuplicateFound] = useState(false);
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    const newGrocery = document.getElementById("newGrocery").value;
+
+    const isDuplicate =
+      groceries.filter((g) => g.toLowerCase() === newGrocery.toLowerCase())
+        .length > 0;
+
+    if (isDuplicate) {
+      setDuplicateFound(true);
+    }
+
+    if (!isDuplicate) {
+      setDuplicateFound(false);
+      setGroceries([...groceries, newGrocery]);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Groceries list</h1>
+      {groceries.map((grocery) => (
+        <p key={grocery}>{grocery}</p>
+      ))}
+
+      <input type="text" id="newGrocery" />
+      <button onClick={handleClick}>Add</button>
+
+      {duplicateFound && <p className="error">This is a duplicate entry</p>}
     </div>
   );
 }
-
-export default App;
